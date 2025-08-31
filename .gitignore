@@ -1,0 +1,15 @@
+# Go
+bin/
+*.exe
+*.test
+*.out
+coverage.*
+vendor/
+
+# IDE
+.vscode/
+.idea/
+
+# Env & artifacts
+.env
+*.log
