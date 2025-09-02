@@ -2,12 +2,110 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Order Viewer</title>
-  <style>body{font-family:system-ui,Segoe UI,Arial;margin:24px}</style>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+    .container {
+      background: #fff;
+      padding: 30px;
+      margin-top: 50px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-width: 500px;
+      width: 100%;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    input {
+      width: calc(100% - 20px);
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #result {
+      white-space: pre-wrap;
+      background: #f7f7f7;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-top: 20px;
+      min-height: 50px;
+    }
+    .loading {
+      font-style: italic;
+      color: #555;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-  <h1>Order Viewer</h1>
-  <p></p>
+  <div class="container">
+    <h1>Order Viewer</h1>
+    <p>Введите <code>order_uid</code>:</p>
+    <input type="text" id="orderId" placeholder="например, b563feb7b2b84b6test" />
+    <button onclick="fetchOrder()">Получить заказ</button>
+
+    <h2>Результат:</h2>
+    <div id="result">Пусто</div>
+  </div>
+
+  <script>
+    async function fetchOrder() {
+      const id = document.getElementById('orderId').value.trim();
+      const resultEl = document.getElementById('result');
+      if (!id) {
+        alert("Введите order_uid");
+        return;
+      }
+
+      resultEl.className = "loading";
+      resultEl.innerText = "Загрузка...";
+
+      try {
+        const res = await fetch(`/order/${id}`);
+        if (!res.ok) {
+          resultEl.className = "error";
+          resultEl.innerText = "Ошибка: " + res.status;
+          return;
+        }
+        const data = await res.json();
+        resultEl.className = "";
+        resultEl.innerText = JSON.stringify(data, null, 2);
+      } catch (err) {
+        resultEl.className = "error";
+        resultEl.innerText = "Ошибка: " + err;
+      }
+    }
+  </script>
 </body>
 </html>
